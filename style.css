@@ -1,0 +1,50 @@
+#click{
+    height: 50px;
+    width: 50px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Outfit', sans-serif;
+    background: #ffffff;
+    height: 100vh;
+    color: #000;
+}
+
+/* Genral */
+.container {
+    padding: 0 8.4rem;
+}
+/* Nav */
+header {
+    box-shadow: 0 4px 17px rgba(0, 0, 0, .1);
+    background: #fff;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 0;
+}
+
+
+.main{
+    margin: 50px;
+}
+
+#buttonContainer {
+
+}
+#buttonContainer button {
+    width: 40px;
+    height: 40px;
+}
