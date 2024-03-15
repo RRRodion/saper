@@ -1,6 +1,9 @@
-#click{
-    height: 50px;
-    width: 50px;
+/* style.css */
+
+.flag {
+    background-image: url('https://avatars.yandex.net/get-games/2977039/2a00000181c98696a772445a8f81e669636c/pjpg128x128'); /* Замените 'path/to/flag/image.png' на путь к вашему изображению флага */
+    background-size: contain;
+    background-repeat: no-repeat;
 }
 
 * {
@@ -11,7 +14,7 @@
 
 body {
     font-family: 'Outfit', sans-serif;
-    background: #ffffff;
+    background: lightgray;
     height: 100vh;
     color: #000;
 }
@@ -22,8 +25,8 @@ body {
 }
 /* Nav */
 header {
-    box-shadow: 0 4px 17px rgba(0, 0, 0, .1);
-    background: #fff;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, .2);
+    background: darkgray;
     position: sticky;
     top: 0;
     z-index: 1;
@@ -44,7 +47,9 @@ header {
 #buttonContainer {
 
 }
+
 #buttonContainer button {
-    width: 40px;
-    height: 40px;
+    font-weight: 800;
+    width: 50px;
+    height: 50px;
 }
