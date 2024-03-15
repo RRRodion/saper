@@ -1,14 +1,20 @@
-let flagMode = false; // Глобальная переменная для отслеживания текущего режима
+let flagMode = false;
 
 function toggle() {
-    flagMode = !flagMode; // Переключение режима
+    flagMode = !flagMode;
     const toggleButton = document.getElementById('toggle');
-    toggleButton.textContent = flagMode ? '🚩' : '1'; // Обновление текста кнопки toggle
+    toggleButton.textContent = flagMode ? '🚩' : '1';
 }
 
 function drawField() {
     const rows = parseInt(document.getElementById('rowsInput').value);
     const cols = parseInt(document.getElementById('colsInput').value);
+    let timerInterval;
+    let seconds = 0;
+    let minutes = 0;
+    let hours = 0;
+    let gameInProgress = false;
+
 
     if (rows < 5) {
         alert('количество столбцов не может быть меньше 5');
@@ -21,7 +27,7 @@ function drawField() {
     const buttonContainer = document.getElementById('buttonContainer');
     buttonContainer.innerHTML = '';
 
-    const buttonsData = {}; // Объект для хранения данных о кнопках
+    const buttonsData = {};
 
     for (let i = 0; i < rows; i++) {
         for (let j = 0; j < cols; j++) {
@@ -31,7 +37,7 @@ function drawField() {
             button.id = id;
             const pos = `${i} ${j}`;
             button.setAttribute('data-pos', pos);
-            buttonsData[id] = { // Создание объекта для хранения данных о кнопке
+            buttonsData[id] = {
                 value: 0,
                 revealed: false,
                 flagged: false,
@@ -51,8 +57,8 @@ function drawField() {
         const button = buttons[index];
         button.textContent = '💣';
         const buttonData = buttonsData[button.id];
-        buttonData.hasBomb = true; // Установка флага, что у кнопки есть бомба
-        buttonData.value = '💣'; // Обновление значения кнопки в объекте buttonsData
+        buttonData.hasBomb = true;
+        buttonData.value = '💣';
     });
 
 
@@ -61,32 +67,41 @@ function drawField() {
     buttons.forEach(button => {
         button.style.color = 'transparent';
         button.addEventListener('click', function () {
-            handleClick(button, buttonsData); // Обработка клика
+            handleClick(button, buttonsData);
         });
     });
 
-    // Функция для обработки клика по кнопке
+    // обработки клика по клетке
     function handleClick(button, buttonsData) {
-        if (flagMode) { // Если выбран режим установки флага
+        if (!gameInProgress) {
+            gameInProgress = true;
+            startTimer();
+        }
+        if (flagMode) {
             const buttonData = buttonsData[button.id];
-            if (!buttonData.revealed) { // Проверяем, не открыта ли уже кнопка
-                if (buttonData.flagged) { // Если кнопка уже была отмечена флагом
-                    button.textContent = buttonData.value; // Убираем флаг
+            if (!buttonData.revealed) {
+                if (buttonData.flagged) {
+                    button.textContent = buttonData.value;
                     button.style.color = 'transparent';
                 } else {
-                    button.textContent = '🚩'; // Устанавливаем флаг
+                    button.textContent = '🚩';
                     button.style.color = 'black';
                 }
-                buttonData.flagged = !buttonData.flagged; // Изменяем состояние флага в объекте buttonsData
+                buttonData.flagged = !buttonData.flagged;
             }
-        } else { // Если выбран режим открытия клеток
+        } else {
             const buttonData = buttonsData[button.id];
-            if (!buttonData.revealed && !buttonData.flagged) { // Проверяем, не открыта ли уже кнопка и не установлен ли флаг
-                // Реализация открытия клетки остается без изменений
+            if (!buttonData.revealed && !buttonData.flagged) {
                 if (buttonData.hasBomb) {
                     button.style.color = 'red';
                     setTimeout(function () {
+                        gameInProgress = false;
+                        clearInterval(timerInterval);
                         alert('Вы проиграли!');
+                        buttons.forEach(button => {
+                            const buttonData = buttonsData[button.id];
+                            buttonData.revealed = true;
+                        });
                         console.log(buttonsData)
                     }, 0);
                 } else if (buttonData.value === 0) {
@@ -110,10 +125,10 @@ function drawField() {
         const buttonData = buttonsData[button.id];
 
         if (buttonData.flagged) {
-            return; // Если на кнопке стоит флаг, выходим из функции
+            return;
         }
 
-        buttonData.revealed = true; // Marking the current button as revealed
+        buttonData.revealed = true;
         button.classList.add('revealed');
         button.style.color = 'black';
 
@@ -126,7 +141,7 @@ function drawField() {
                         if (neighborButtonData.value === 0) {
                             revealEmpty(buttons, buttonsData, neighborButton);
                         } else {
-                            neighborButtonData.revealed = true; // Marking the neighbor button as revealed
+                            neighborButtonData.revealed = true;
                             neighborButton.classList.add('revealed');
                             neighborButton.style.color = 'blue';
                         }
@@ -179,19 +194,40 @@ function drawField() {
             }
         }
     }
-}
 
-function checkWin(buttons, buttonsData) {
-    let count = 0;
-    buttons.forEach(button => {
-        const buttonData = buttonsData[button.id];
-        if (!buttonData.revealed && !buttonData.hasBomb) {
-            count++;
+    function checkWin(buttons, buttonsData) {
+        let count = 0;
+        buttons.forEach(button => {
+            const buttonData = buttonsData[button.id];
+            if (!buttonData.revealed && !buttonData.hasBomb) {
+                count++;
+            }
+        });
+        if (count === 0) {
+            gameInProgress = false;
+            clearInterval(timerInterval);
+            alert('Поздравляем! Вы победили!');
         }
-    });
-    if (count === 0) {
-        alert('Поздравляем! Вы победили!');
     }
+
+    function startTimer() {
+        timerInterval = setInterval(updateTimer, 1000);
+    }
+
+    function updateTimer() {
+        seconds++;
+        if (seconds >= 60) {
+            seconds = 0;
+            minutes++;
+            if (minutes >= 60) {
+                minutes = 0;
+                hours++;
+            }
+        }
+        const formattedTime = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        document.getElementById('timer').textContent = formattedTime;
+    }
+
 }
 
 function rules() {
@@ -202,25 +238,4 @@ function rules() {
         ' указывающий, сколько мин находится в восьми соседних полях. Базируясь на этих числах,' +
         ' игрок должен определить, где находятся мины. Цель игры - нахождение всех мин, посредством открытия полей,' +
         ' в которых нет мин.');
-}
-
-function log() {
-    const buttonsData = {}; // Создание объекта для хранения данных о кнопках
-    const buttons = document.querySelectorAll('#buttonContainer button');
-
-    console.log(`------------------ ${buttons.length} -------------------`);
-
-    buttons.forEach(button => {
-        const id = button.id;
-        const value = button.textContent;
-        buttonsData[id] = {
-            value: value,
-            revealed: button.classList.contains('revealed'),
-            flagged: button.textContent === '🚩',
-            hasBomb: button.textContent === '💣'
-        };
-        console.log(button.textContent);
-        console.log(button.id);
-    });
-    console.log(buttonsData);
 }
