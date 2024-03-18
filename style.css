@@ -39,9 +39,36 @@ header {
     padding: 1rem 0;
 }
 
+.page button {
+    display: inline-block;
+    box-sizing: border-box;
+    padding: 0 25px;
+    outline: none;
+    border: 1px solid #444;
+    height: 30px;
+    line-height: 30px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #444;
+    background-color: transparent;
+    box-shadow: 0 4px 6px rgb(65 132 144 / 10%), 0 1px 3px rgb(0 0 0 / 8%);
+    cursor: pointer;
+    touch-action: manipulation;
+    vertical-align: top;
+    transition: box-shadow 0.2s;
+    margin: 5px;
+}
+.page input {
+    outline: none;
+    height: 26.8px;
+    margin: 5px;
+}
+
 
 .main{
     margin: 50px;
+    display: flex;
+    justify-content: center;
 }
 
 #buttonContainer {
@@ -53,3 +80,8 @@ header {
     width: 50px;
     height: 50px;
 }
+
+#field {
+     display: flex;
+     justify-content: center;
+ }

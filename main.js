@@ -30,6 +30,7 @@ function drawField() {
     const buttonsData = {};
 
     for (let i = 0; i < rows; i++) {
+        const rowContainer = document.createElement('div');
         for (let j = 0; j < cols; j++) {
             const button = document.createElement('button');
             button.textContent = '0';
@@ -43,9 +44,9 @@ function drawField() {
                 flagged: false,
                 hasBomb: false
             };
-            buttonContainer.appendChild(button);
+            rowContainer.appendChild(button);
         }
-        buttonContainer.appendChild(document.createElement('br'));
+        buttonContainer.appendChild(rowContainer);
     }
 
     const totalFields = rows * cols;
@@ -102,7 +103,6 @@ function drawField() {
                             const buttonData = buttonsData[button.id];
                             buttonData.revealed = true;
                         });
-                        console.log(buttonsData)
                     }, 0);
                 } else if (buttonData.value === 0) {
                     revealEmpty(buttons, buttonsData, button);
@@ -211,7 +211,9 @@ function drawField() {
     }
 
     function startTimer() {
-        timerInterval = setInterval(updateTimer, 1000);
+        if (!timerInterval) {
+            timerInterval = setInterval(updateTimer, 1000);
+        }
     }
 
     function updateTimer() {
