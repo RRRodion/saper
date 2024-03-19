@@ -1,11 +1,5 @@
 let flagMode = false;
 
-function toggle() {
-    flagMode = !flagMode;
-    const toggleButton = document.getElementById('toggle');
-    toggleButton.textContent = flagMode ? '🚩' : '1';
-}
-
 function drawField() {
     const rows = parseInt(document.getElementById('rowsInput').value);
     const cols = parseInt(document.getElementById('colsInput').value);
@@ -67,8 +61,17 @@ function drawField() {
 
     buttons.forEach(button => {
         button.style.color = 'transparent';
-        button.addEventListener('click', function () {
-            handleClick(button, buttonsData);
+        button.addEventListener('click', function (event) {
+            if (event.button === 0) {
+                handleClick(button, buttonsData);
+            } else if (event.button === 2) {
+                event.preventDefault();
+                toggleFlag(button, buttonsData);
+            }
+        });
+        button.addEventListener('contextmenu', function (event) {
+            event.preventDefault();
+            toggleFlag(button, buttonsData);
         });
     });
 
@@ -79,17 +82,7 @@ function drawField() {
             startTimer();
         }
         if (flagMode) {
-            const buttonData = buttonsData[button.id];
-            if (!buttonData.revealed) {
-                if (buttonData.flagged) {
-                    button.textContent = buttonData.value;
-                    button.style.color = 'transparent';
-                } else {
-                    button.textContent = '🚩';
-                    button.style.color = 'black';
-                }
-                buttonData.flagged = !buttonData.flagged;
-            }
+            toggleFlag(button, buttonsData);
         } else {
             const buttonData = buttonsData[button.id];
             if (!buttonData.revealed && !buttonData.flagged) {
@@ -115,6 +108,20 @@ function drawField() {
 
                 checkWin(buttons, buttonsData);
             }
+        }
+    }
+
+    function toggleFlag(button, buttonsData) {
+        const buttonData = buttonsData[button.id];
+        if (!buttonData.revealed) {
+            if (buttonData.flagged) {
+                button.textContent = buttonData.value;
+                button.style.color = 'transparent';
+            } else {
+                button.textContent = '🚩';
+                button.style.color = 'black';
+            }
+            buttonData.flagged = !buttonData.flagged;
         }
     }
 

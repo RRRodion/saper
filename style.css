@@ -1,7 +1,5 @@
-/* style.css */
-
 .flag {
-    background-image: url('https://avatars.yandex.net/get-games/2977039/2a00000181c98696a772445a8f81e669636c/pjpg128x128'); /* Замените 'path/to/flag/image.png' на путь к вашему изображению флага */
+    background-image: url('https://avatars.yandex.net/get-games/2977039/2a00000181c98696a772445a8f81e669636c/pjpg128x128');
     background-size: contain;
     background-repeat: no-repeat;
 }
@@ -34,7 +32,7 @@ header {
 
 .page-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
     align-items: center;
     padding: 1rem 0;
 }
@@ -63,7 +61,6 @@ header {
     height: 26.8px;
     margin: 5px;
 }
-
 
 .main{
     margin: 50px;
