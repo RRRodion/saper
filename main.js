@@ -1,14 +1,17 @@
-let flagMode = false;
 
+document.getElementById('drawButton').addEventListener('click', drawField);
+let timerInterval;
+function clearTimer() {
+    clearInterval(timerInterval);
+    document.getElementById('timer').textContent = '00:00:00';
+}
 function drawField() {
+    clearTimer()
     const rows = parseInt(document.getElementById('rowsInput').value);
     const cols = parseInt(document.getElementById('colsInput').value);
-    let timerInterval;
-    let seconds = 0;
-    let minutes = 0;
-    let hours = 0;
-    let gameInProgress = false;
 
+    let totalSeconds = 0;
+    let gameInProgress = false;
 
     if (rows < 5) {
         alert('количество столбцов не может быть меньше 5');
@@ -80,33 +83,29 @@ function drawField() {
         if (!gameInProgress) {
             gameInProgress = true;
             startTimer();
-        }
-        if (flagMode) {
-            toggleFlag(button, buttonsData);
         } else {
             const buttonData = buttonsData[button.id];
             if (!buttonData.revealed && !buttonData.flagged) {
                 if (buttonData.hasBomb) {
                     button.style.color = 'red';
+                    gameInProgress = false;
+                    clearInterval(timerInterval);
+                    buttonData.revealed = true;
                     setTimeout(function () {
-                        gameInProgress = false;
-                        clearInterval(timerInterval);
                         alert('Вы проиграли!');
-                        buttons.forEach(button => {
-                            const buttonData = buttonsData[button.id];
-                            buttonData.revealed = true;
-                        });
                     }, 0);
                 } else if (buttonData.value === 0) {
                     revealEmpty(buttons, buttonsData, button);
-                    button.style.color = 'black';
+                    button.style.color = 'white';
                 } else {
                     button.classList.add('revealed');
                     button.style.color = 'blue';
                     buttonData.revealed = true;
                 }
 
+                setTimeout(function () {
                 checkWin(buttons, buttonsData);
+                }, 0);
             }
         }
     }
@@ -137,7 +136,7 @@ function drawField() {
 
         buttonData.revealed = true;
         button.classList.add('revealed');
-        button.style.color = 'black';
+        button.style.color = 'white';
 
         for (let i = row - 1; i <= row + 1; i++) {
             for (let j = col - 1; j <= col + 1; j++) {
@@ -218,27 +217,22 @@ function drawField() {
     }
 
     function startTimer() {
-        if (!timerInterval) {
             timerInterval = setInterval(updateTimer, 1000);
-        }
     }
 
     function updateTimer() {
-        seconds++;
-        if (seconds >= 60) {
-            seconds = 0;
-            minutes++;
-            if (minutes >= 60) {
-                minutes = 0;
-                hours++;
-            }
-        }
+        totalSeconds++;
+        const hours = Math.floor(totalSeconds / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        const seconds = totalSeconds % 60;
+
         const formattedTime = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
         document.getElementById('timer').textContent = formattedTime;
     }
 
 }
 
+document.getElementById('rulesButton').addEventListener('click', rules);
 function rules() {
     alert('В начале игры у игрока есть планшет, заполненный закрытыми квадратными полями. ' +
         'Некоторые из этих полей скрывают мины, а некоторые нет. Задача игрока – определить под каким ' +
